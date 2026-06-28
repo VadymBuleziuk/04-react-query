@@ -34,7 +34,7 @@ function App() {
     placeholderData: keepPreviousData,
   });
   useEffect(() => {
-    if (data?.length === 0) {
+    if (data?.results?.length === 0) {
       toast.error("No movies found for your request.");
     }
   }, [data]);

@@ -14,7 +14,7 @@ export const fetchMovies = async (
   query: string,
   token: string,
   page: number,
-): Promise<Movie[]> => {
+): Promise<MoviesResponse> => {
   const response = await axios.get<MoviesResponse>(BASE_URL, {
     params: { query, page },
     headers: {
