@@ -12,9 +12,10 @@ const BASE_URL = "https://api.themoviedb.org/3/search/movie";
 
 export const fetchMovies = async (
   query: string,
-  token: string,
   page: number,
 ): Promise<MoviesResponse> => {
+  const token = import.meta.env.VITE_TMDB_TOKEN;
+
   const response = await axios.get<MoviesResponse>(BASE_URL, {
     params: { query, page },
     headers: {

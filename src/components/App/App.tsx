@@ -17,7 +17,6 @@ function App() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  const token = import.meta.env.VITE_TMDB_TOKEN;
   const openModal = (movie: Movie) => {
     setSelectedMovie(movie);
   };
@@ -26,10 +25,11 @@ function App() {
 
   const handleSubmit = (query: string) => {
     setQuery(query);
+    setPage(1);
   };
   const { data, isLoading, isError } = useQuery<MoviesResponse>({
     queryKey: ["movie", query, page],
-    queryFn: () => fetchMovies(query, token, page),
+    queryFn: () => fetchMovies(query, page),
     enabled: query !== "",
     placeholderData: keepPreviousData,
   });
@@ -43,18 +43,19 @@ function App() {
   return (
     <div className={css.app}>
       <Toaster position="top-center" />
+
+      <SearchBar onSubmit={handleSubmit} />
+      {isError ? (
+        <ErrorMessage />
+      ) : (
+        <MovieGrid movies={data?.results ?? []} onSelect={openModal} />
+      )}
       {data && data.total_pages > 1 && (
         <Pagination
           totalPages={data.total_pages}
           page={page}
           setPage={setPage}
         />
-      )}
-      <SearchBar onSubmit={handleSubmit} />
-      {isError ? (
-        <ErrorMessage />
-      ) : (
-        <MovieGrid movies={data?.results ?? []} onSelect={openModal} />
       )}
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={closeModal} />
