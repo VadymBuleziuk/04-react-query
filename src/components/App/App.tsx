@@ -27,7 +27,7 @@ function App() {
     setQuery(query);
     setPage(1);
   };
-  const { data, isLoading, isError } = useQuery<MoviesResponse>({
+  const { data, isSuccess, isLoading, isError } = useQuery<MoviesResponse>({
     queryKey: ["movie", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query !== "",
@@ -45,22 +45,24 @@ function App() {
       <Toaster position="top-center" />
 
       <SearchBar onSubmit={handleSubmit} />
-      {isError ? (
-        <ErrorMessage />
-      ) : (
-        <MovieGrid movies={data?.results ?? []} onSelect={openModal} />
-      )}
-      {data && data.total_pages > 1 && (
+
+      {isError && <ErrorMessage />}
+
+      {isSuccess && <MovieGrid movies={data.results} onSelect={openModal} />}
+
+      {isLoading && <Loader />}
+
+      {isSuccess && data.total_pages > 1 && (
         <Pagination
-          totalPages={data.total_pages}
-          page={page}
-          setPage={setPage}
+          pageCount={data.total_pages}
+          forcePage={page}
+          onPageChange={setPage}
         />
       )}
+
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={closeModal} />
       )}
-      {isLoading && <Loader />}
     </div>
   );
 }
