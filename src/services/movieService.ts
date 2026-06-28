@@ -13,13 +13,14 @@ const BASE_URL = "https://api.themoviedb.org/3/search/movie";
 export const fetchMovies = async (
   query: string,
   token: string,
+  page: number,
 ): Promise<Movie[]> => {
   const response = await axios.get<MoviesResponse>(BASE_URL, {
-    params: { query },
+    params: { query, page },
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
-  return response.data.results;
+  return response.data;
 };
